@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    tools {
+        jdk 'jdk17' // Name from Global Tool Configuration
+    }
+    stages {
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Dineshkumar021993/flask-tomcat.git'
+            }
+        }
+        stage('Build WAR') {
+            steps {
+                sh '''
+                # Create WAR file
+                mkdir -p build
+                cp -r src WEB-INF build/
+                cd build
+                jar -cvf my-webapp.war .
+                '''
+            }
+        }
+        stage('Deploy to Tomcat') {
+            steps {
+                deploy adapters: [tomcat9(credentialsId: 'tomcat-cred', path: '', url: 'http://3.95.60.235:8082')],
+                       contextPath: '/my-webapp',
+                       war: 'build/my-webapp.war'
+            }
+        }
+    }
+}
