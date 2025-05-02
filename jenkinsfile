@@ -14,7 +14,7 @@ pipeline {
                 sh '''
                 # Create WAR file
                 mkdir -p build
-                cp -r src WEB-INF build/
+                cp -r python-webapp/src python-webapp/WEB-INF build/
                 cd build
                 jar -cvf my-webapp.war .
                 '''
